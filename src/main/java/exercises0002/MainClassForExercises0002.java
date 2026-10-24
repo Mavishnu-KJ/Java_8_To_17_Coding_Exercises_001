@@ -1,15 +1,43 @@
 package exercises0002;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class MainClassForExercises0002 {
+
+    public static record Employee(
+            int id,
+            String name,
+            String department,
+            Double salary
+    ){
+
+    }
 
     public static void main(String[] args){
 
-    /*
-    Group and Aggregate Data: Given a list of Employee objects (with fields: id, name, department, salary),
-    write a stream pipeline to find the highest-paid employee in each department.
-    */
+        /*
+        Group and Aggregate Data: Given a list of Employee objects (with fields: id, name, department, salary),
+        write a stream pipeline to find the highest-paid employee in each department.
+        */
 
-    //Highest paid employee
+        List<Employee> employeeList = Arrays.asList(
+                new Employee(7, "Dhoni", "WK Plus Batting", 777777.0),
+                new Employee(10, "Sachin", "Cricket", 888888.0),
+                new Employee(18, "Virat Kohli", "Batting", 666666.0),
+                new Employee(7, "Dhawan", "Batting", 444444.0),
+                null,
+                new Employee(7, "Yuvraj", "All Rounder", 777777.0),
+                new Employee(7, "KL Rahul", "WK Plus Batting", 555555.0),
+                new Employee(7, "Jadeja", "All Rounder", 444444.0)
+        );
+
+        //Highest paid employee
+
+
+
+
+
 
     //Highest paid employee using Collectors.reducing
 
