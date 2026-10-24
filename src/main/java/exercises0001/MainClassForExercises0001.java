@@ -2,6 +2,7 @@ package exercises0001;
 
 public class MainClassForExercises0001 {
 
+    //Template class
     public static void main(String[] args){
 
     /*
