@@ -33,15 +33,73 @@ public class MainClassForExercises0002 {
         );
 
         //Highest paid employee
+        Map<String, Employee> highestPaidEmployeeDepartmentWiseMap = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        Collectors.maxBy(Comparator.comparingDouble(Employee :: salary))
+                )).entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue().orElse(null)
+                ));
+
+        System.out.println("Highest paid employee department wise");
+        highestPaidEmployeeDepartmentWiseMap.forEach((String dept, Employee emp) -> {
+            System.out.println(dept+" - "+emp);
+        });
+
+        //Highest paid employee using Collectors.reducing
+        Map<String, Employee> highestPaidEmployeeDepartmentWiseMap1 = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee :: department,
+                        Collectors.reducing((e2, e1) -> e1.salary() > e2.salary() ? e1 : e2)
+                )).entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry :: getKey,
+                        entry -> entry.getValue().orElse(null)
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Highest paid employee department wise using Collectors.reducing()");
+        highestPaidEmployeeDepartmentWiseMap1.forEach((String dept, Employee emp) -> {
+            System.out.println(dept+" - "+emp);
+        });
+
+        //Second highest paid employee
+        Map<String, Employee> secondHighestPaidEmployeeDepartmentWiseMap = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee :: department,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+
+                                list -> {
+
+                                    if(list.size() < 2){
+                                        return null;
+                                    }
+
+                                    list.sort(Comparator.comparingDouble(Employee::salary));
+                                    return list.get(1);
+
+                                }
+                        ))
+                ).entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(
+                        Map.Entry :: getKey,
+                        entry -> entry.getValue()
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Second highest paid employee department wise");
+        highestPaidEmployeeDepartmentWiseMap1.forEach((String dept, Employee emp) -> {
+            System.out.println(dept+" - "+emp);
+        });
 
 
-
-
-
-
-    //Highest paid employee using Collectors.reducing
-
-    //Second highest paid employee
 
     /*
     Frequency Count: Given a string,
