@@ -45,7 +45,7 @@ public class MainClassForExercises0002 {
                 ));
 
         System.out.println("Highest paid employee department wise");
-        highestPaidEmployeeDepartmentWiseMap.forEach((String dept, Employee emp) -> {
+        highestPaidEmployeeDepartmentWiseMap.forEach((dept, emp) -> {
             System.out.println(dept+" - "+emp);
         });
 
@@ -63,7 +63,7 @@ public class MainClassForExercises0002 {
 
         System.out.println("=".repeat(100));
         System.out.println("Highest paid employee department wise using Collectors.reducing()");
-        highestPaidEmployeeDepartmentWiseMap1.forEach((String dept, Employee emp) -> {
+        highestPaidEmployeeDepartmentWiseMap1.forEach((dept, emp) -> {
             System.out.println(dept+" - "+emp);
         });
 
@@ -95,16 +95,55 @@ public class MainClassForExercises0002 {
 
         System.out.println("=".repeat(100));
         System.out.println("Second highest paid employee department wise");
-        highestPaidEmployeeDepartmentWiseMap1.forEach((String dept, Employee emp) -> {
+        secondHighestPaidEmployeeDepartmentWiseMap.forEach((dept, emp) -> {
             System.out.println(dept+" - "+emp);
         });
 
+        /*
+        Frequency Count: Given a string,
+        find the frequency of each character, and filter out the top 3 most frequent elements using Streams.
+        */
 
+        String str = "aaabbbbbbcccdddd";
 
-    /*
-    Frequency Count: Given a string,
-    find the frequency of each character, and filter out the top 3 most frequent elements using Streams.
-    */
+        Set<Character> top3MostFrequentElementSet = str.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c -> c,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e2,e1) -> Long.compare(e2.getValue(), e1.getValue()))
+                .map(entry -> entry.getKey())
+                .limit(3)
+                .collect(Collectors.toSet());
+
+        System.out.println("=".repeat(100));
+        System.out.println("Top 3 most frequent elements");
+        top3MostFrequentElementSet.forEach(c ->
+            System.out.println(c)
+        );
+
+        Map<Character, Long> frequencyMap = str.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c -> c,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .collect(Collectors.toMap(
+                        Map.Entry :: getKey,
+                        entry -> entry.getValue(),
+                        (existing, duplicate) -> existing,
+                        LinkedHashMap::new
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Top 3 most frequent elements - Using frequency map");
+        frequencyMap.forEach((c, freq) ->{
+                System.out.println(c+" repeated "+freq+" times");
+        });
+
 
     /*
     Frequency Count: Given a list of words,
