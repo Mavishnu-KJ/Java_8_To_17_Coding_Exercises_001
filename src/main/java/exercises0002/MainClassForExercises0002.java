@@ -145,10 +145,38 @@ public class MainClassForExercises0002 {
         });
 
 
-    /*
-    Frequency Count: Given a list of words,
-    find the frequency of each word, and filter out the top 3 most frequent elements using Streams.
-    */
+        /*
+        Frequency Count: Given a list of words,
+        find the frequency of each word, and filter out the top 3 most frequent elements using Streams.
+        */
+
+        List<String> wordList = Arrays.asList(
+                "banana", "banana", "apple", "orange", "banana",
+                "banana", "orange", "banana", "apple", "orange"
+        );
+
+        Map<String, Integer> top3MostFrequentWordMap = wordList.stream()
+                .collect(Collectors.groupingBy(
+                        s -> s,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .collect(Collectors.toMap(
+                        Map.Entry :: getKey,
+                        entry -> entry.getValue().intValue(),
+                        (existing, duplicate) -> existing,
+                        LinkedHashMap :: new
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Top 3 most frequent word");
+        top3MostFrequentWordMap.forEach((word, freq) ->{
+            System.out.println(word+" repeated "+freq+" times");
+        });
+
+
+
 
     /*
     Flattening Nested Collections: Given a list of Order objects, where each order contains a list of Item objects,
