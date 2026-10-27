@@ -2,6 +2,7 @@ package exercises0002;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MainClassForExercises0002 {
 
@@ -201,41 +202,12 @@ public class MainClassForExercises0002 {
         });
 
         /*
+
         04. Flattening Nested Collections: Given a list of Order objects,
         where each order contains a list of Item objects, extract a distinct,
         sorted list of all item names across all orders using flatMap.
 
-        05. Partitioning Data: Given a list of transactions,
-        partition them into two groups (e.g., transactions above ₹50,000 and below) and
-        calculate the average transaction amount for each group simultaneously.
-
-        06. Custom String Joining: Given a list of strings, filter out empty strings, convert them to uppercase,
-        and join them with a comma separator enclosed in square brackets like [A, B, C].
-
-        07. Data Aggregation: Given a collection of complex Employee,
-        use Streams to sort them dynamically by department name first, and then by salary descending.
-
-        08. Find the number which is repeated the same number of times.
-        Given List : [12,13,2,2,3,5,4,4,4,4], Can you guess the output?
-        Output {2,4}
-
-        09. Return the consecutive two numbers 2 peer. Output will be List<List>.
-        Given list [1,2,4,5,7,8,9], Output {{1,2}, {4,5}, {7,8}, {8,9}}
-
-        10. Print non-repeating first character. Consider any String. your wish.
-
-        11. Binary Grouping: Take a number in binary form and count the groups of isolated 0s individually before a 1 appears.
-        (e.g., Input: 0011000 → Output: groups of size 2 and 3).
-
-        Note : Time Complexity Explanation:
-                O(n) — String split and stream operations process each character linearly.
-                Space Complexity Explanation:
-                O(n) — For storing the resulting list of group sizes.
-
-        12. Merge Overlapping Intervals: Given a collection of intervals (e.g., [1,3], [2,6], [8,10]),
-        merge all overlapping intervals to output [1,6], [8,10]. (Tests sorting and custom collection logic).
-*/
-        //For practice purpose : These are created for ready to use. In actual interview, you need to create - START
+        */
 
         List<Order> orderList = List.of(
                 new Order(List.of(new Item("Keyboard"), new Item("Mouse"))),
@@ -244,6 +216,25 @@ public class MainClassForExercises0002 {
                 new Order(List.of(new Item("Tab"), new Item("Mouse"))),
                 new Order(List.of(new Item("Pen")))
         );
+
+        Set<String> itemNameList = orderList.stream()
+                .flatMap(order -> order.itemList().stream())
+                .map(item -> item.itemName())
+                .sorted()
+                //.toSet(); //Wont preserve the order
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Distinct items list sorted");
+        itemNameList.forEach(itemName -> System.out.println(itemName));
+
+        /*
+
+        05. Partitioning Data: Given a list of transactions,
+        partition them into two groups (e.g., transactions above ₹50,000 and below) and
+        calculate the average transaction amount for each group simultaneously.
+
+        */
 
         List<Transaction> transactionList = List.of(
                 new Transaction("10", 80000.0),
@@ -254,17 +245,187 @@ public class MainClassForExercises0002 {
                 new Transaction("15", 20000.0)
         );
 
+        Map<Boolean, Double> transactionPartitioningByCutOffMap = transactionList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.partitioningBy(
+                    transaction -> transaction.amount > 50000,
+                    Collectors.averagingDouble(Transaction::amount)
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Average transaction amount for each group");
+        transactionPartitioningByCutOffMap.forEach((cutOff, average) -> {
+
+            if(cutOff){
+                System.out.println("Above cutoff (50000), average amount : "+average);
+            }else{
+                System.out.println("Below cutoff (50000), average amount : "+average);
+            }
+
+        });
+
+
+        /*
+        06. Custom String Joining: Given a list of strings, filter out empty strings, convert them to uppercase,
+        and join them with a comma separator enclosed in square brackets like [A, B, C].
+        */
+
         List<String> stringList = Arrays.asList(
                 "Sachin", "Shewag", "Gambhir", "Virat", "", "Yuvraj", null, "Dhoni", "   ", "Raina"
         );
 
+        String joinedString = stringList.stream()
+                .filter(s -> s!=null && !s.isBlank())
+                .map(String::toUpperCase)
+                .collect(Collectors.joining(",", "[", "]"));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Joined String : "+joinedString);
+
+
+        /*
+        07. Data Aggregation: Given a collection of complex Employee,
+        use Streams to sort them dynamically by department name first, and then by salary descending.
+
+        */
+
+        Map<String, List<Employee>> highestPaidEmployeeListSortedByDepartNameAscMap = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        TreeMap::new,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+
+                                    if(list == null || list.size() <1){
+                                        return null;
+                                    }
+
+                                    list.sort((e1, e2) -> Double.compare(e2.salary(), e1.salary()));
+                                    return list;
+                                }
+                        )
+                )).entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue(),
+                        (existing, duplicate) -> existing,
+                        LinkedHashMap :: new
+                ));
+
+        System.out.println("=".repeat(100));
+        System.out.println("Employee list sorted by department name first and then salary desc");
+        highestPaidEmployeeListSortedByDepartNameAscMap.forEach((dept, empList) -> {
+
+            System.out.println("=".repeat(50));
+            System.out.println("department : "+dept);
+            System.out.println("=".repeat(10));
+
+            empList.forEach(emp -> System.out.println(emp));
+
+                }
+        );
+
+        /*
+
+        08. Find the number which is repeated the same number of times.
+        Given List : [12,13,2,2,3,5,4,4,4,4], Can you guess the output?
+        Output {2,4}
+        */
+
         List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
+
+        List<Integer> outputList = integerList.stream()
+                .collect(Collectors.groupingBy(
+                        n -> n,
+                        LinkedHashMap::new,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .filter(entry -> entry.getKey() == entry.getValue().intValue())
+                .map(entry -> entry.getKey())
+                .toList();
+
+        System.out.println("outputList : "+outputList);
+        /*
+
+        09. Return the consecutive two numbers 2 peer. Output will be List<List>.
+        Given list [1,2,4,5,7,8,9], Output {{1,2}, {4,5}, {7,8}, {8,9}}
+        */
 
         List<Integer> integerList1 = List.of(1,2,4,5,7,8,9);
 
+        List<List<Integer>> outputList1 = IntStream.range(0, integerList1.size()-1)
+                .filter(i -> integerList1.get(i+1).equals(integerList1.get(i)+1))
+                .mapToObj(i -> List.of(integerList1.get(i), integerList1.get(i+1)))
+                .toList();
+
+        System.out.println("=".repeat(50));
+        System.out.println("integerList1 : "+integerList1);
+        System.out.println("outputList1 : "+outputList1);
+
+        /*
+        10. Print non-repeating first character. Consider any String. your wish.
+        */
+
         String s1 = "aabbcddxxyyza";
 
+        Character nonRepeatingFirstCharacter = s1.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c -> c,
+                        LinkedHashMap::new,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .filter(entry -> entry.getValue() == 1)
+                .map(entry -> entry.getKey())
+                .findFirst()
+                .orElse(null);
+
+        System.out.println("=".repeat(50));
+        System.out.println("nonRepeatingFirstCharacter in the String "+s1+" is "+nonRepeatingFirstCharacter);
+
+        /*
+        11. Binary Grouping: Take a number in binary form and count the groups of isolated 0s individually before a 1 appears.
+        (e.g., Input: 0011000 → Output: groups of size 2 and 3).
+
+        Note : Time Complexity Explanation:
+                O(n) — String split and stream operations process each character linearly.
+                Space Complexity Explanation:
+                O(n) — For storing the resulting list of group sizes.
+        */
+
         String binaryNumber = "0011000";
+
+        List<Integer> zeroGroups = Arrays.stream(binaryNumber.split("1+"))
+                .map(String::length)
+                .toList();
+
+        System.out.println("=".repeat(50));
+        System.out.println("binaryNumber : "+binaryNumber);
+        System.out.println("zeroGroups : "+zeroGroups);
+
+
+        /*
+        12. Merge Overlapping Intervals: Given a collection of intervals (e.g., [1,3], [2,6], [8,10]),
+        merge all overlapping intervals to output [1,6], [8,10]. (Tests sorting and custom collection logic).
+*/
+        //For practice purpose : These are created for ready to use. In actual interview, you need to create - START
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         int[][] intervals = {{1,3}, {2,6}, {8,10}, {15,18}, {9,11}};
 
