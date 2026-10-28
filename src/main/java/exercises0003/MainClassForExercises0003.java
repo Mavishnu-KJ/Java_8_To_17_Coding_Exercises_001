@@ -1,7 +1,7 @@
 package exercises0003;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainClassForExercises0003 {
 
@@ -45,13 +45,93 @@ public class MainClassForExercises0003 {
             => Highest paid employee
             => Highest paid employee using Collectors.reducing
             => Second highest paid employee
+        */
 
+        List<Employee> employeeList = Arrays.asList(
+                new Employee(7, "Dhoni", "WK Plus Batting", 777777.0),
+                new Employee(10, "Sachin", "Cricket", 888888.0),
+                new Employee(18, "Virat Kohli", "Batting", 666666.0),
+                new Employee(7, "Dhawan", "Batting", 444444.0),
+                new Employee(7, "Yuvraj", "All Rounder", 777777.0),
+                new Employee(7, "KL Rahul", "WK Plus Batting", 555555.0),
+                new Employee(7, "Jadeja", "All Rounder", 444444.0)
+        );
+
+        //Highest paid employee
+        Map<String, Employee> highestPaidEmployeeMap = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        Collectors.maxBy(Comparator.comparingDouble(Employee::salary))
+                )).entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().orElse(null)
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Highest paid employee department wise");
+        highestPaidEmployeeMap.forEach((dept, emp)->{
+            System.out.println(dept+" - "+emp);
+
+        });
+
+        //Highest paid employee using Collectors.reducing
+        Map<String, Employee> highestPaidEmployeeMap1 = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        Collectors.reducing((e1, e2) -> e1.salary() > e2.salary() ? e1 : e2)
+                )).entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().orElse(null)
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Highest paid employee department wise using Collectors.reducing");
+        highestPaidEmployeeMap1.forEach((dept, emp)->{
+            System.out.println(dept+" - "+emp);
+
+        });
+
+        //Second highest paid employee
+        Map<String, Employee> secondHighestPaidEmployeeMap = employeeList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        Employee::department,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+                                    if(list.size()<2){
+                                        return null;
+                                    }
+
+                                    list.sort((e1,e2) -> Double.compare(e2.salary(), e1.salary()));
+                                    return list.get(1);
+                                }
+                        )
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Second highest paid employee department wise using Collectors.reducing");
+        secondHighestPaidEmployeeMap.forEach((dept, emp)->{
+            System.out.println(dept+" - "+emp);
+
+        });
+
+
+        /*
         02. Frequency Count: Given a string, find the frequency of each character,
         and filter out the top 3 most frequent elements using Streams.
 
             => Using Set
             => Using Map (Show with frequency)
+        */
 
+
+
+        /*
         03. Frequency Count: Given a list of words, find the frequency of each word,
         and filter out the top 3 most frequent elements using Streams.
 
@@ -91,15 +171,7 @@ public class MainClassForExercises0003 {
 */
         //For practice purpose : These are created for ready to use. In actual interview, you need to create - START
 
-        List<Employee> employeeList = Arrays.asList(
-                new Employee(7, "Dhoni", "WK Plus Batting", 777777.0),
-                new Employee(10, "Sachin", "Cricket", 888888.0),
-                new Employee(18, "Virat Kohli", "Batting", 666666.0),
-                new Employee(7, "Dhawan", "Batting", 444444.0),
-                new Employee(7, "Yuvraj", "All Rounder", 777777.0),
-                new Employee(7, "KL Rahul", "WK Plus Batting", 555555.0),
-                new Employee(7, "Jadeja", "All Rounder", 444444.0)
-        );
+
 
         String str = "aaabbbbbbcccdddd";
 
