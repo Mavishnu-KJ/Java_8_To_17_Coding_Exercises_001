@@ -229,13 +229,58 @@ public class MainClassForExercises0003 {
         05. Partitioning Data: Given a list of transactions,
         partition them into two groups (e.g., transactions above ₹50,000 and below) and
         calculate the average transaction amount for each group simultaneously.
+        */
 
+        List<Transaction> transactionList = List.of(
+                new Transaction("10", 80000.0),
+                new Transaction("18", 60000.0),
+                new Transaction("7", 70000.0),
+                new Transaction("3", 40000.0),
+                new Transaction("1", 45000.0),
+                new Transaction("15", 20000.0)
+        );
+
+        Map<Boolean, Double> transactionsPartitioningByCutOffMap = transactionList.stream()
+                .collect(Collectors.partitioningBy(
+                        transaction -> transaction.amount() > 50000,
+                        Collectors.averagingDouble(Transaction::amount)
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Partitioning transaction list into 2 groups by cut off");
+        transactionsPartitioningByCutOffMap.forEach((cutOff, averageAmount) -> {
+            if(cutOff){
+                System.out.println("Transaction amount above 50000 group: average amount : "+averageAmount);
+            }else{
+                System.out.println("Transaction amount below 50000 group: average amount : "+averageAmount);
+            }
+        });
+
+        /*
         06. Custom String Joining: Given a list of strings, filter out empty strings, convert them to uppercase,
         and join them with a comma separator enclosed in square brackets like [A, B, C].
+        */
 
+        List<String> stringList = Arrays.asList(
+                "Sachin", "Shewag", "Gambhir", "Virat", "", "Yuvraj", null, "Dhoni", "   ", "Raina"
+        );
+
+        String joinedString = stringList.stream()
+                .filter(s -> s!=null && !s.isBlank())
+                .map(String::toUpperCase)
+                .collect(Collectors.joining(",","[","]"));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Joined string : "+joinedString);
+
+        /*
         07. Data Aggregation: Given a collection of complex Employee,
         use Streams to sort them dynamically by department name first, and then by salary descending.
+        */
 
+
+
+        /*
         08. Find the number which is repeated the same number of times.
         Given List : [12,13,2,2,3,5,4,4,4,4], Can you guess the output?
         Output {2,4}
@@ -266,18 +311,9 @@ public class MainClassForExercises0003 {
 
 
 
-        List<Transaction> transactionList = List.of(
-                new Transaction("10", 80000.0),
-                new Transaction("18", 60000.0),
-                new Transaction("7", 70000.0),
-                new Transaction("3", 40000.0),
-                new Transaction("1", 45000.0),
-                new Transaction("15", 20000.0)
-        );
 
-        List<String> stringList = Arrays.asList(
-                "Sachin", "Shewag", "Gambhir", "Virat", "", "Yuvraj", null, "Dhoni", "   ", "Raina"
-        );
+
+
 
         List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
 
