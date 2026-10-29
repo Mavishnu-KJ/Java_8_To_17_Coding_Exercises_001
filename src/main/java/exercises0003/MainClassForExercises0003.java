@@ -129,16 +129,103 @@ public class MainClassForExercises0003 {
             => Using Map (Show with frequency)
         */
 
+        String str = "aaabbbbbbcccdddd";
 
+        //Using Set
+        Set<Character> top3MostFrequentElementSet = str.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c ->c,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .map(Map.Entry :: getKey)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Top 3 most frequent elements using Set");
+        top3MostFrequentElementSet.forEach(element -> System.out.println(element));
+
+        //Using Map (show with frequency)
+        Map<Character, Integer> top3MostFrequentElementMap = str.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c -> c,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .collect(Collectors.toMap(
+                        Map.Entry :: getKey,
+                        entry -> entry.getValue().intValue(),
+                        (existing, duplicate) -> existing,
+                        LinkedHashMap :: new
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Top 3 most frequent elements using Map (show with frequency)");
+        top3MostFrequentElementMap.forEach((element, freq) -> {
+            System.out.println(element+" repeated "+freq+" times");
+        });
 
         /*
         03. Frequency Count: Given a list of words, find the frequency of each word,
         and filter out the top 3 most frequent elements using Streams.
+        */
 
+        List<String> wordList = Arrays.asList(
+                "banana", "banana", "apple", "orange", "banana",
+                "banana", "orange", "banana", "apple", "orange"
+        );
+
+        Map<String, Integer> top3MostFrequentWordMap = wordList.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(
+                        s -> s,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().intValue(),
+                        (existing, duplicate) -> existing,
+                        LinkedHashMap::new
+
+                ));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Top 3 most frequent words using Map (show with frequency)");
+        top3MostFrequentWordMap.forEach((word, freq) -> {
+            System.out.println(word+" repeated "+freq+" times");
+        });
+
+        /*
         04. Flattening Nested Collections: Given a list of Order objects,
         where each order contains a list of Item objects, extract a distinct,
         sorted list of all item names across all orders using flatMap.
+        */
 
+        List<Order> orderList = List.of(
+                new Order(List.of(new Item("Keyboard"), new Item("Mouse"))),
+                new Order(List.of(new Item("Laptop"), new Item("Bag"))),
+                new Order(List.of(new Item("Keyboard"), new Item("Mobile"))),
+                new Order(List.of(new Item("Tab"), new Item("Mouse"))),
+                new Order(List.of(new Item("Pen")))
+        );
+
+        Set<String> distinctItemNamesListSorted = orderList.stream()
+                .flatMap(order -> order.itemList().stream())
+                .map(item -> item.itemName())
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        System.out.println("=".repeat(50));
+        System.out.println("Distinct items sorted asc by itemName");
+        distinctItemNamesListSorted.forEach(System.out::println);
+
+        /*
         05. Partitioning Data: Given a list of transactions,
         partition them into two groups (e.g., transactions above ₹50,000 and below) and
         calculate the average transaction amount for each group simultaneously.
@@ -173,20 +260,11 @@ public class MainClassForExercises0003 {
 
 
 
-        String str = "aaabbbbbbcccdddd";
 
-        List<String> wordList = Arrays.asList(
-                "banana", "banana", "apple", "orange", "banana",
-                "banana", "orange", "banana", "apple", "orange"
-        );
 
-        List<Order> orderList = List.of(
-                new Order(List.of(new Item("Keyboard"), new Item("Mouse"))),
-                new Order(List.of(new Item("Laptop"), new Item("Bag"))),
-                new Order(List.of(new Item("Keyboard"), new Item("Mobile"))),
-                new Order(List.of(new Item("Tab"), new Item("Mouse"))),
-                new Order(List.of(new Item("Pen")))
-        );
+
+
+
 
         List<Transaction> transactionList = List.of(
                 new Transaction("10", 80000.0),
