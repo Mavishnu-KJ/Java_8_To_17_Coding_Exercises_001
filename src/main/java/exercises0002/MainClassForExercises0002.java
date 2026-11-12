@@ -398,13 +398,13 @@ public class MainClassForExercises0002 {
 
         String binaryNumber = "0011000";
 
-        List<Integer> zeroGroups = Arrays.stream(binaryNumber.split("1+"))
+        List<Integer> zeroGroupsList = Arrays.stream(binaryNumber.split("1+"))
                 .map(String::length)
                 .toList();
 
         System.out.println("=".repeat(50));
         System.out.println("binaryNumber : "+binaryNumber);
-        System.out.println("zeroGroups : "+zeroGroups);
+        System.out.println("zeroGroups : "+zeroGroupsList);
 
 
         /*

@@ -2,6 +2,7 @@ package exercises0005;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MainClassForExercises0005 {
 
@@ -354,9 +355,40 @@ public class MainClassForExercises0005 {
         /*
         09. Return the consecutive two numbers 2 peer. Output will be List<List>.
         Given list [1,2,4,5,7,8,9], Output {{1,2}, {4,5}, {7,8}, {8,9}}
+        */
 
+        List<Integer> integerList1 = List.of(1,2,4,5,7,8,9);
+
+        List<List<Integer>> outputList = IntStream.range(0, integerList1.size() - 1)
+                .filter(i -> integerList1.get(i+1).equals(integerList1.get(i)+1))
+                .mapToObj(i -> List.of(integerList1.get(i), integerList1.get(i+1)))
+                .toList();
+
+        System.out.println("=".repeat(50));
+        System.out.println("integerList1 : "+integerList1);
+        System.out.println("outputList1 : "+outputList);
+
+        /*
         10. Print non-repeating first character. Consider any String. your wish.
+        */
+        String s1 = "aabbcddxxyyza";
 
+        Character nonRepeatingFirstCharacterInTheGivenString = s1.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.groupingBy(
+                        c -> c,
+                        LinkedHashMap::new,
+                        Collectors.counting()
+                )).entrySet().stream()
+                .filter(entry -> entry.getValue() == 1)
+                .map(entry -> entry.getKey())
+                .findFirst()
+                .orElse(null);
+
+        System.out.println("=".repeat(50));
+        System.out.println("nonRepeatingFirstCharacter in the String "+s1+" is "+nonRepeatingFirstCharacterInTheGivenString);
+
+        /*
         11. Binary Grouping: Take a number in binary form and count the groups of isolated 0s individually before a 1 appears.
         (e.g., Input: 0011000 → Output: groups of size 2 and 3).
 
@@ -365,6 +397,20 @@ public class MainClassForExercises0005 {
                 Space Complexity Explanation:
                 O(n) — For storing the resulting list of group sizes.
 
+        */
+
+        String binaryNumber = "0011000";
+
+        List<Integer> zeroGroupsList = Arrays.stream(binaryNumber.split("1+"))
+                .map(String::length)
+                .toList();
+
+        System.out.println("=".repeat(50));
+        System.out.println("binaryNumber : "+binaryNumber);
+        System.out.println("zeroGroups : "+zeroGroupsList);
+
+
+        /*
         12. Merge Overlapping Intervals: Given a collection of intervals (e.g., [1,3], [2,6], [8,10]),
         merge all overlapping intervals to output [1,6], [8,10]. (Tests sorting and custom collection logic).
 */
@@ -384,11 +430,11 @@ public class MainClassForExercises0005 {
 
 
 
-        List<Integer> integerList1 = List.of(1,2,4,5,7,8,9);
 
-        String s1 = "aabbcddxxyyza";
 
-        String binaryNumber = "0011000";
+
+
+
 
         int[][] intervals = {{1,3}, {2,6}, {8,10}, {15,18}, {9,11}};
 
