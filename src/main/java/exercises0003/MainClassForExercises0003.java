@@ -280,11 +280,23 @@ public class MainClassForExercises0003 {
 
 
 
+
         /*
         08. Find the number which is repeated the same number of times.
         Given List : [12,13,2,2,3,5,4,4,4,4], Can you guess the output?
         Output {2,4}
 
+        */
+
+        List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
+
+        /*
+        List<Integer> outputList = integerList.stream()
+                .filter()
+                */
+
+
+        /*
         09. Return the consecutive two numbers 2 peer. Output will be List<List>.
         Given list [1,2,4,5,7,8,9], Output {{1,2}, {4,5}, {7,8}, {8,9}}
 
@@ -315,7 +327,8 @@ public class MainClassForExercises0003 {
 
 
 
-        List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
+        //List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
+        //List<Integer> integerList = List.of(12,13,2,2,3,5,4,4,4,4);
 
         List<Integer> integerList1 = List.of(1,2,4,5,7,8,9);
 
