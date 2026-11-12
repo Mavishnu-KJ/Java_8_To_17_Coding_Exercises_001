@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MainClassForExercises0004 {
 
@@ -74,13 +75,13 @@ public class MainClassForExercises0004 {
 
         System.out.println("olist : "+olist);
 
-        /*
+
 
         List<Integer> outputList = integerList2.stream()
-                .flatMap(i -> i.stream())
+                .flatMap(i -> Stream.of(i))
                 .toList();
 
-        */
+        System.out.println("outputList : "+outputList);
 
 
 
